@@ -130,6 +130,10 @@ str(mtcars)</code></pre>
 ##  $ am  : Factor w/ 2 levels &quot;Automatic&quot;,&quot;Manual&quot;: 2 2 2 1 1 1 1 1 1 1 ...
 ##  $ gear: Factor w/ 3 levels &quot;3&quot;,&quot;4&quot;,&quot;5&quot;: 2 2 2 1 1 1 1 2 2 2 ...
 ##  $ carb: Factor w/ 6 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 4 4 1 1 2 1 4 2 2 4 ...</code></pre>
+</div>
+</div>
+<div id="exploratory-data-analysis" class="section level2">
+<h2>Exploratory Data Analysis</h2>
 <p>We will explore the relationships between the varaibles and outcome using scatterplot matrix:</p>
 <pre class="r"><code>library(car)
 scatterplot.matrix(~mpg + cyl + disp + hp + drat + wt + qsec + vs + am + gear + 
@@ -138,7 +142,6 @@ scatterplot.matrix(~mpg + cyl + disp + hp + drat + wt + qsec + vs + am + gear +
 <pre class="r"><code>fit1 &lt;- lm(mpg ~. , data=mtcars)
 fit2 &lt;- step(fit1, direction = &quot;both&quot;, trace=0)</code></pre>
 <p>The best model includes cyl, wt, hp and am as predictors for mpg</p>
-</div>
 <div id="residuals-and-diagnostics" class="section level3">
 <h3>Residuals and Diagnostics</h3>
 <p>We will use residual plots of our regression model to compute some of the regression diagnostics for our model and find out some interesting outliers in the data set</p>

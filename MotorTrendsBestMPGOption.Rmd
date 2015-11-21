@@ -66,7 +66,7 @@ mtcars$gear <- factor(mtcars$gear)
 mtcars$carb <- factor(mtcars$carb)
 str(mtcars)
 ```  
-
+##Exploratory Data Analysis  
 We will explore the relationships between the varaibles and outcome using scatterplot matrix:
 ```{r scatterplotm, echo=TRUE}
 library(car)
