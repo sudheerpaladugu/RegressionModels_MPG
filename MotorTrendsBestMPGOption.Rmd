@@ -1,0 +1,117 @@
+---
+title: "Motor Trend Analysis for better MPG option  - Manual Vs Automatic Transimission"
+output: html_document
+---
+
+#Summary
+
+Motor Tren Magazine performing analysis on Automatic and Manual Transmission cars to check the best option which gives more miles per gallon (MPG).  
+They are particularly interested in the following two questions:
+"Is an automatic or manual transmission better for MPG"
+"Quantify the MPG difference between automatic and manual transmissions"
+
+```{r echo=FALSE}
+setwd("C:/Data/devtools/Git/RegressionModels_MPG")
+library(knitr)
+knitr::opts_chunk$set(fig.width=40, fig.height=20, fig.path='figs/', warning=FALSE, message=FALSE,echo = FALSE)
+set.seed(1232)
+```
+
+#Analysis  
+##Data Processing  
+  Loading mtcars data and finding the relation between mpg and other data elements in dataset  
+  
+```{r loading data, echo=TRUE}
+data("mtcars")
+dim(mtcars)
+```
+{mtcars} data set contains 32 rows and 11 columns  
+
+Initialilly we will check the mean MPG (miles per gallon) for automatic and manual transmission from data summary
+
+```{r meansMPG, echo=TRUE}
+autmean <- mtcars[mtcars$am == 0,]
+summary(autmean)[4,1] #Automatic
+manmean <- mtcars[mtcars$am == 1,]
+summary(manmean)[4,1] #Manual
+```  
+
+Manual transmission `r as.character(summary(manmean)[4,1])` is heigher than automaic transmission `r as.character(summary(autmean)[4,1])`
+
+###Quantifying MPG differences using boxplot
+```{r boxplot, echo=TRUE}
+#Updating transmission label 
+mtcars$am <- factor(mtcars$am, labels = c("Automatic", "Manual"))
+boxplot(mpg ~ am, data = mtcars, xlab = "Transmission Type", ylab = "MPG (miles per gallon)", main="MPG for Transmission Type")
+```
+From boxplot, manual transmission gives more milage  
+
+###t-test  
+We will test this hypothesis by taking alpha 0.5
+```{r hypothesis, echo=TRUE}
+aggres <- aggregate(mpg~am, data = mtcars, mean)
+(aggres[2,2] - aggres[1,2])
+t.test(autmean$mpg, manmean$mpg)
+```
+P-value = 0.001374 (almost zero), we reject this null hypothesis. It means there exist a major difference between automatic and manual transmission
+
+Transforming required data elements to proceed further with our analysis  
+
+```{r 'processing data', echo=TRUE}
+#converting factor variables for plots and models
+mtcars$cyl <- factor(mtcars$cyl)
+mtcars$vs <- factor(mtcars$vs)
+mtcars$gear <- factor(mtcars$gear)
+mtcars$carb <- factor(mtcars$carb)
+str(mtcars)
+```  
+
+We explore the relationships between the varaibles and outcome using scatterplot matrix  
+
+
+```{r scatterplotm, echo=TRUE}
+library(car)
+scatterplot.matrix(~mpg + cyl + disp + hp + drat + wt + qsec + vs + am + gear + 
+    carb, data = mtcars, main = "Scatterplot Matrix")
+```
+Based on scatterplot results, mpg has high corelation with few variables.    
+Initially we will build a model (linear regression model) with all variables as predictors. 
+
+```{r echo=TRUE}
+fit1 <- lm(mpg ~. , data=mtcars)
+fit2 <- step(fit1, direction = "both", trace=0)
+```  
+The best model obtained from the above computations which includes cyl, wt, hp and am as predictors for mpg  
+
+###Residuals and Diagnostics   
+We will use residual plots of our regression model to compute some of the regression diagnostics for our model and find out some interesting outliers in the data set  
+
+```{r echo=TRUE}
+par(mfrow = c(2,2))
+plot(fit2)
+```
+**Q-Q Plots observations:**  
+Residuals vs Fitted plot random points confirms that the independence condition. Normal Q-Q plot the points shows that the residuals are normally distributed. Scale-Location plot the points patterns indicating the constant variance. Residuals vs Leverage plot shows some leverage points are in the top right corner of the plot  
+
+```{r echo=TRUE}
+summary(fit2)
+```
+
+From summary, the adjusted R square value is equal to 0.84 which is the maximum obtained by considering **cyl, hp, wt, and am** variables. So we could conclude more than 84% of the variability is explained by this model  
+
+Using NOVA we will compare the base model with only am as predictor to confirm fit2 is the best model
+
+###Hypothesis
+
+```{r confirmTheBest, echo=TRUE}
+final_model <- lm(mpg ~ am, data = mtcars)
+anova(fit2, final_model)
+```
+P-value obtained is highly significant  
+We reject this null hypothesis that the confounder variables cyl, hp and wt do not contribute to get the accuracy of the model
+
+###Conclusion ###  
+
+Observations from summary(fit2)  
+
+'Manual' transmission give 1.80 more mpg when compared to 'Automatic'. The conclusion for Motor Trend Magazine is: 'Manual' transmission is better for mpg. MPG decrease by 2.5 for every 1000 lb of increase in weight. MPG decreases with increase of hp. MPG decreases for number of cylenders increases from 4 to 6 and 8, respectively.
