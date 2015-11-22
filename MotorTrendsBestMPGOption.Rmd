@@ -1,6 +1,6 @@
 ---
-title: "Motor Trend Analysis: Manual Vs Automatic Transimission for better MPG"
-output: html_document
+title: 'Motor Trend Analysis: Manual Vs Automatic Transimission for better MPG'
+output: pdf_document
 ---
 
 #Summary
@@ -13,6 +13,7 @@ Motor Tren Magazine performing analysis on Automatic and Manual transmission whi
 ```{r echo=FALSE}
 setwd("C:/Data/devtools/Git/RegressionModels_MPG")
 library(knitr)
+library(rmarkdown)
 knitr::opts_chunk$set(fig.width=40, fig.height=20, fig.path='figs/', warning=FALSE, message=FALSE,echo = FALSE)
 set.seed(1232)
 ```
