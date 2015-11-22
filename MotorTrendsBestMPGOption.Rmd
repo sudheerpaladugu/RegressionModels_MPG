@@ -11,6 +11,10 @@ Motor Tren Magazine performing analysis on Automatic and Manual transmission whi
 
 
 ```{r echo=FALSE}
+#NOTE:-
+#Use below command to render html to pdf
+#render("MotorTrendsBestMPGOption.Rmd", "pdf_document")
+#installed 'pandoc-1.15.2-windows.msi' and 'basic-miktex-2.9.5721-x64.exe' required for knit html 2 pdf conversion
 setwd("C:/Data/devtools/Git/RegressionModels_MPG")
 library(knitr)
 library(rmarkdown)
